@@ -27,13 +27,21 @@ async function ralie() {
   const tagLink = $(".journal-content-article ul li a").last();
   const link = $(tagLink).attr("href");
 
-  download(`https://www.aneel.gov.br${link}`, "ralie", { extract: true });
+  await download(`https://www.aneel.gov.br${link}`, "ralie", { extract: true });
   const planilha = await streamToPromise("./ralie/1_Usinas_Implanta.csv");
   const ralie = planilha.map((element) => {
     // pegando so ceg e cronograma enquanto confirmamos quais sao os outros dois campos
-    return { ceg: element.CEG, cronograma: element.Cronograma };
+    const data = new Date(element["Previsão de Operação Comercial"]);
+    return {
+      ceg: element.CEG,
+      cronograma: element.Cronograma,
+      anoCodPrevisto: data.getFullYear(),
+      codPrevisto: data,
+      subestacao: element['Conexão (Completo)']
+    };
   });
-  return ralie
+  // console.log(ralie[0]);
+  return ralie;
 }
 
 (async () => ralie())();
