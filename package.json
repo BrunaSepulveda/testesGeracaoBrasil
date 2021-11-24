@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.24.0",
     "cheerio": "^1.0.0-rc.10",
+    "csv-parser": "^3.0.0",
     "download": "^8.0.0",
     "node-xlsx": "^0.17.2",
     "puppeteer": "^11.0.0"
