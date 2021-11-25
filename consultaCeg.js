@@ -2,7 +2,11 @@ const axios = require('axios').default
 const cheerio = require('cheerio')
 
 async function html() {
-  const apiPrimeiraPag = await axios.post('https://www2.aneel.gov.br/scg/consulta_empreendimento.asp?acao=BUSCAR&pagina=1&IdTipoGeracao=&IdFaseUsina=1&CodCIE=&NomeEmpreendimento=');
+  console.time("app")
+
+  console.time("pag 1")
+  const apiPrimeiraPag = await axios.post('https://www2.aneel.gov.br/scg/consulta_empreendimento.asp?acao=BUSCAR&pagina=1&IdTipoGeracao=&IdFaseUsina=&CodCIE=&NomeEmpreendimento=');
+  console.timeEnd("pag 1")
 
   const $ = cheerio.load(apiPrimeiraPag.data);
   let quantidade = $('td.linhaBranca:contains("Quantidade")').text()
@@ -17,7 +21,9 @@ async function html() {
     return extrairDados(response)
   }
   async function objLinhasTabela (pag){
-    const api = await axios.post(`https://www2.aneel.gov.br/scg/consulta_empreendimento.asp?acao=BUSCAR&pagina=${pag}&IdTipoGeracao=&IdFaseUsina=1&CodCIE=&NomeEmpreendimento=`)
+    console.time(`pag ${pag}`)
+    const api = await axios.post(`https://www2.aneel.gov.br/scg/consulta_empreendimento.asp?acao=BUSCAR&pagina=${pag}&IdTipoGeracao=&IdFaseUsina=&CodCIE=&NomeEmpreendimento=`)
+    console.timeEnd(`pag ${pag}`)
     return extrairDados(api)
   }
 
@@ -79,7 +85,7 @@ async function html() {
     })
     return corpo;
   }
-  let tabelaCompleta = []
+  const tabelaCompleta = []
   for await (let pag of iteravel){
     if (pag === 1) {
       const corpoPrimeiraPag = primeiraPagObjLinhasTabela(apiPrimeiraPag)
@@ -89,6 +95,7 @@ async function html() {
       tabelaCompleta.push(...corpoPorPag)
     }
   }
-  console.log(tabelaCompleta[0])
+  console.timeEnd("app")
+  console.log(tabelaCompleta.length)
 }
 (async() => html())()
