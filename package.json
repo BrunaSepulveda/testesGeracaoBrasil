@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --max-old-space-size=4096 index.js",
+    "pm2": "pm2 start index.js --node-args='--max-old-space-size=4096'"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,7 @@
     "cheerio": "^1.0.0-rc.10",
     "csv-parser": "^3.0.0",
     "download": "^8.0.0",
+    "express": "^4.17.1",
     "node-xlsx": "^0.17.2",
     "puppeteer": "^11.0.0"
   }

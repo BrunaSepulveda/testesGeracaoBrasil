@@ -9,13 +9,13 @@ const cheerio = require('cheerio')
   ano = new Date().getFullYear(),
   scripts = $(`.list-documentos script:contains("InfoMercado - Dados Individuais - ${ano}")`).html(),
   link = scripts.split(';').find((element) =>  element.includes("url")).replace('entryJSOBJ["url"] = ','').trim().replace(/ /g,'_').replace(/"/g,'');
+  const infomercados = []
   try {
     const planilha = await download(`${link}`);
     let planilhaObj = xlsx.parse(planilha).find((element) => element.name === '002 Usinas').data;
     planilhaObj.splice(0,14)
     const ultimaPosicao = planilhaObj.length - 13932
     planilhaObj.splice(ultimaPosicao,13931)
-    let informercados = []
     planilhaObj.forEach((linha) => {
       if (linha[3] && linha[3] !== '') {
         const objLinhasTabela = {ceg: '', potencia:'', garatiaFisica: '',descontoTUST:'', participaDoMRE:''}
@@ -24,11 +24,13 @@ const cheerio = require('cheerio')
         objLinhasTabela.garatiaFisica = !linha[17] && linha[17] ==='' ? null : linha[17]
         objLinhasTabela.descontoTUST = !linha[15] && linha[15] ==='' ? null : linha[15]
         objLinhasTabela.participaDoMRE = !linha[13] && linha[13] ==='' ? null : linha[13]
-        informercados.push(objLinhasTabela)
+        infomercados.push(objLinhasTabela)
       }
     })
   } catch (err) {
     console.error(err)
   }
+  return infomercados
 }
-(async() => informercado())()
+
+module.exports = informercado

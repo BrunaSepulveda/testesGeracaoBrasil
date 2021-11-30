@@ -5,6 +5,7 @@ const fs = require("fs");
 const csvParser = require("csv-parser");
 
 async function ralie() {
+  
   function streamToPromise(filePath) {
     const result = [];
     return new Promise(function (resolve, reject) {
@@ -40,8 +41,7 @@ async function ralie() {
       subestacao: element['Conexão (Completo)']
     };
   });
-  // console.log(ralie[0]);
   return ralie;
 }
 
-(async () => ralie())();
+module.exports = ralie

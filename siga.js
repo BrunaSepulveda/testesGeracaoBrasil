@@ -21,6 +21,7 @@ async function siga() {
 
   await browser.close();
 
+  const planilhaCompleta = [];
   try {
     // Download
     const planilha = await download(link);
@@ -30,12 +31,12 @@ async function siga() {
     const planilhaObj = xlsx.parse(planilha)
     const planilhaObjDRO = xlsx.parse(planilhaDRO);
     
-    console.log(planilhaObj[0].data[1])
-    console.log(planilhaObjDRO[0].data[1])
+    planilhaCompleta.push(...planilhaObj)
+    planilhaCompleta.push(...planilhaObjDRO)
   } catch (error) {
     console.error(error);
   }
-  // const planilhaDRO = await download(linkDRO)
+  return planilhaCompleta
 }
 
-siga();
+module.exports = siga

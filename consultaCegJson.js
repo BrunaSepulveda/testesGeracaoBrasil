@@ -2,7 +2,7 @@ const axios = require("axios").default;
 const cheerio = require("cheerio");
 const fs = require("fs");
 
-async function html() {
+async function consultaCegJson() {
   console.time("app");
 
   console.time("pag 1");
@@ -151,4 +151,5 @@ async function html() {
   }
   console.timeEnd("app");
 }
-(async () => html())();
+
+module.exports = consultaCegJson
