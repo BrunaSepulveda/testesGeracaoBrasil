@@ -77,6 +77,7 @@ async function consultaCegJson() {
             });
         }
         if (Object.keys(linhaObj).length > 0) {
+          console.log(linhaObj)
           const obj = {
             ceg: "",
             tipo: "",
@@ -151,5 +152,5 @@ async function consultaCegJson() {
   }
   console.timeEnd("app");
 }
-
+consultaCegJson()
 module.exports = consultaCegJson
