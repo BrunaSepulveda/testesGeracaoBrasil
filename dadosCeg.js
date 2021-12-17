@@ -1,4 +1,4 @@
-export const data = [
+const data = [
   [
   'CEG',
   'Tipo',
@@ -50,5 +50,32 @@ export const data = [
   'DRO Expirado',
   '',
   'Barcarena(PA)'
+],
+[
+  'UFV.RS.MG.037401-6.01',
+  'UFV',
+  'AC I',
+  '30.933,00',
+  '',
+  'Radiação solar',
+  '',
+  '',
+  'DRO',
+  'VALE S.A. (33.592.510/0001-54)',
+  'Jaíba(MG)'
+],
+[
+  'PCH.PH.RS.030400-0.01',
+  'PCH',
+  'Abranjo I',
+  '4.860,00',
+  '2,26',
+  'Potencial hidráulico',
+  'Abranjo',
+  '01/05/2014',
+  'Operação',
+  'Abranjo Geração de Energia S.A (13.562.900/0001-74)',
+  'Encruzilhada do Sul(RS)'
+],
 ]
-]
+module.exports = { data }

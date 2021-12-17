@@ -45,11 +45,15 @@ async function consultaCeg() {
     return linhas
   }
 
-  function restPags(pag){
+  async function restPags(pag){
     const api = await axios.get(
       `https://www2.aneel.gov.br/scg/consulta_empreendimento.asp?acao=BUSCAR&pagina=${pag}&IdTipoGeracao=&IdFaseUsina=&CodCIE=&NomeEmpreendimento=`
     );
     return extrairDados(api);
+  }
+  function stringKwToNumberMw(potencia){
+    const potenciaInNumberKw = Number(potencia.replace('.', '').replace(',','.'));
+    return potenciaInNumberKw/1000;
   }
 
   function fieldSeparator(string) {
@@ -77,8 +81,8 @@ async function consultaCeg() {
 
   function setValuesOrSetNull(stingValue, prop1, prop2) {
     const valuesList = fieldSeparator(stingValue);
-    if (valuesList.length > 0) {
-      return { [`${prop1}`]:valuesList[0] , [`${prop2}`]: valuesList[1]}
+    if (valuesList && valuesList.length > 0) {
+      return { [`${prop1}`]:valuesList[0].trim() , [`${prop2}`]: valuesList[1].trim()}
     } else {
       return { [`${prop1}`]:null , [`${prop2}`]: null}
     }
@@ -106,7 +110,7 @@ async function consultaCeg() {
       if (emptyValueToNull(linha[0])) {  
         const ceg = linha[0],
         cegResumido = regexCegResumido(linha[0]),
-        potenciaMw = Math.round(linha[3]/1000),
+        potenciaMw = stringKwToNumberMw(linha[3]),
         { razaoSocial, cnpj } = setValuesOrSetNull(linha[9], 'razaoSocial', 'cnpj'),
         { municipio, uf } = setValuesOrSetNull(linha[10], 'municipio', 'uf'),
         dataOperacao = formatterDataOperacao(linha[7]);
@@ -116,7 +120,7 @@ async function consultaCeg() {
           cegResumido,
           tipo: linha[1],
           potenciaMw,
-          garantiaFisicaMw: linha[4],
+          garantiaFisicaMw: Number(linha[4].replace(',','.')),
           nomeEmprendimento: linha[2],
           razaoSocial,
           cnpj,
@@ -130,20 +134,32 @@ async function consultaCeg() {
     return allLinesInObj
   }
 
-  function mergeDataFromAllPages(){
+  async function mergeDataFromAllPages(){
     const apiPrimeiraPag = await axios.get(
       "https://www2.aneel.gov.br/scg/consulta_empreendimento.asp?acao=BUSCAR&pagina=1&IdTipoGeracao=&IdFaseUsina=&CodCIE=&NomeEmpreendimento="
-    );
-    const amountPag = getAmountPag(apiPrimeiraPag);
-    const allPages = amountPag.map((numberPage) => {
-      if (numberPage === 1) {
-        return extrairDados(apiPrimeiraPag);
-      } else {
-        return restPags(numberPage)
-      }
-    });
+    ),
+    amountPag = getAmountPag(apiPrimeiraPag),
+    allPages = [];
+     for(const numberPage of amountPag) {
+       if (numberPage === 1) {
+         let contentFirstPage = extrairDados(apiPrimeiraPag);
+         contentFirstPage.splice(0,1)
+        allPages.push(...contentFirstPage);
+       } else {
+         const contentcurrentPage = await restPags(numberPage);
+         allPages.push(...contentcurrentPage);
+       }
+     }
     return allPages
   }
+  let dados = [...data];
+  dados.splice(0,1)
+  const paginas = formatterLinhas(dados);
+  console.log(paginas)
+  // function addByCrawler() {
+  //   const allLinesPages = await mergeDataFromAllPages();
+  //   const allLinesInObj = formatterLinhas(allLinesPages)
+  // }
 }
 
 consultaCeg()
