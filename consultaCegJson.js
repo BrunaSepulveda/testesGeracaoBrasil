@@ -30,7 +30,7 @@ async function consultaCegJson() {
   }
   async function objLinhasTabela(pag) {
     console.time(`pag ${pag}`);
-    const api = await axios.post(
+    const api = await axios.get(
       `https://www2.aneel.gov.br/scg/consulta_empreendimento.asp?acao=BUSCAR&pagina=${pag}&IdTipoGeracao=&IdFaseUsina=&CodCIE=&NomeEmpreendimento=`
     );
     console.timeEnd(`pag ${pag}`);
