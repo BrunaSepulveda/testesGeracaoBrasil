@@ -157,8 +157,7 @@ async function consultaCeg() {
   const paginas = formatterLinhas(dados);
   console.log(paginas)
   // function addByCrawler() {
-  //   const allLinesPages = await mergeDataFromAllPages();
-  //   const allLinesInObj = formatterLinhas(allLinesPages)
+
   // }
 }
 
